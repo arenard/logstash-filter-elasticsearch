@@ -2,6 +2,7 @@
 require "base64"
 require "elasticsearch"
 require "elastic/transport/transport/http/manticore"
+require "logstash/plugin_mixins/elasticsearch_auth_support"
 
 module LogStash
   module Filters
@@ -25,7 +26,7 @@ module LogStash
         transport_options = { }
         transport_options[:headers] = options.fetch(:serverless, false) ?  DEFAULT_EAV_HEADER.dup : {}
         transport_options[:headers].merge!(setup_basic_auth(user, password))
-        transport_options[:headers].merge!(setup_api_key(api_key))
+        transport_options[:headers].merge!(setup_api_key(api_key, logger))
         transport_options[:headers].merge!({ 'user-agent' => "#{user_agent}" })
         transport_options[:headers].merge!(INTERNAL_ORIGIN_HEADER)
         transport_options[:headers].merge!(custom_headers) unless custom_headers.empty?
@@ -99,17 +100,9 @@ module LogStash
         { 'Authorization' => "Basic #{token}" }
       end
 
-      def setup_api_key(api_key)
-        return {} unless (api_key&.value)
-
-        token = base64?(api_key.value) ? api_key.value : Base64.strict_encode64(api_key.value)
-        { 'Authorization' => "ApiKey #{token}" }
-      end
-
-      def base64?(string)
-        string == Base64.strict_encode64(Base64.strict_decode64(string))
-      rescue ArgumentError
-        false
+      def setup_api_key(api_key, logger = nil)
+        header = LogStash::PluginMixins::ElasticsearchAuthSupport.api_key_auth_header(api_key, logger: logger)
+        header ? { 'Authorization' => header } : {}
       end
     end
   end

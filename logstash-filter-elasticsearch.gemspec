@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'logstash-mixin-ecs_compatibility_support', '~> 1.3'
   s.add_runtime_dependency 'logstash-mixin-ca_trusted_fingerprint_support', '~> 1.0'
   s.add_runtime_dependency 'logstash-mixin-validator_support', '~> 1.0'
+  s.add_runtime_dependency 'logstash-mixin-elasticsearch_auth_support', '~> 0.1'
   s.add_development_dependency 'cabin', ['~> 0.6']
   s.add_development_dependency 'webrick'
   s.add_development_dependency 'logstash-devutils'

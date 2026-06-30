@@ -1,3 +1,6 @@
+## 4.4.1
+  - Support Elastic Cloud API keys in the `api_key` option, and centralise `api_key` credential handling in the shared `logstash-mixin-elasticsearch_auth_support` gem
+
 ## 4.4.0
   - Drop a support for Logstash 7.x by requiring `elasticsearch` gem >= 8. Logstash 8+ continues to work as before. [#213](https://github.com/logstash-plugins/logstash-filter-elasticsearch/pull/213)
 
